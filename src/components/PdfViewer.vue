@@ -11,6 +11,7 @@ const props = defineProps({
 
 const pdfObject = ref<HTMLObjectElement>()
 const loading = ref<boolean>(true)
+const notLoading = computed(() => !loading.value)
 
 watch(() => props.path, () => loading.value = true)
 
@@ -34,7 +35,7 @@ const dataURL = computed(() => `${props.path}${opts}`);
     <!-- The iframe -->
     <object
         class="w-65/100 h-full"
-        v-show="!loading.value"
+        v-show="notLoading"
         ref="pdfObject"
         :data="dataURL"
         type="application/pdf"
