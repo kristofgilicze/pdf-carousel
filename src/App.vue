@@ -3,7 +3,11 @@ import { computed, ref, watch } from 'vue';
 import PdfViewer from './components/PdfViewer.vue';
 
 const MAX = 48;
-const currentPage = ref<number>(1)
+const getPage = (): number => {
+  const page = parseInt(window.location.search.split('page=')[1]);
+  return page > 0 ? page : 1;
+}
+const currentPage = ref<number>(getPage())
 
 const url = computed(() => `./assets/pages/LLBG_latvany_20220223_vegleges-${currentPage.value}.pdf`);
 
