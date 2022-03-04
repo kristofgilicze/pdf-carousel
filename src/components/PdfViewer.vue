@@ -12,7 +12,9 @@ const props = defineProps({
 const pdfObject = ref<HTMLObjectElement>()
 const loading = ref<boolean>(true)
 
-watch(() => props.path, () => loading.value = true)
+watch(() => props.path, () => {
+    loading.value = true
+})
 
 onMounted(() => {
     pdfObject.value?.addEventListener('load', () => {
@@ -32,11 +34,5 @@ const dataURL = computed(() => `${props.path}${opts}`);
     </div>
 
     <!-- The iframe -->
-    <object
-        class="w-65/100 h-full"
-        v-show="!loading.value"
-        ref="pdfObject"
-        :data="dataURL"
-        type="application/pdf"
-    ></object>
+    <object class="w-65/100 h-full" ref="pdfObject" :data="dataURL" type="application/pdf"></object>
 </template>
