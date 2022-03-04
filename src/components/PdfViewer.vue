@@ -1,23 +1,42 @@
-<script lang="ts">
-import { ref, defineComponent, h, computed } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, ref, watch } from 'vue';
+import Loading from './Loading.vue';
 
-export default defineComponent({
-    props: {
-        path: {
-            type: String,
-            default: '',
-        },
-    },
-    setup(props) {
-        const opts = "#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&scrollbar=0"
-        const dataURL = computed(() => `${props.path}${opts}`);
-
-        return () => h('object', {
-            data: dataURL.value,
-            type: "application/pdf",
-            height: '100%',
-            width: '100%',
-        })
+const props = defineProps({
+    path: {
+        type: String,
+        default: '',
     },
 })
+
+const pdfObject = ref<HTMLObjectElement>()
+const loading = ref<boolean>(true)
+
+watch(() => props.path, () => loading.value = true)
+
+onMounted(() => {
+    pdfObject.value?.addEventListener('load', () => {
+        loading.value = false
+    })
+})
+
+const opts = "#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&scrollbar=0"
+const dataURL = computed(() => `${props.path}${opts}`);
+
 </script>
+
+<template>
+    <!-- The loading indicator -->
+    <div class="w-65/100 h-full flex justify-center items-center" v-show="loading" id="loading">
+        <Loading class="w-12 h-12" />
+    </div>
+
+    <!-- The iframe -->
+    <object
+        class="w-65/100 h-full"
+        v-show="!loading.value"
+        ref="pdfObject"
+        :data="dataURL"
+        type="application/pdf"
+    ></object>
+</template>
