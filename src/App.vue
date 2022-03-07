@@ -8,7 +8,7 @@ const getPage = (): number => {
   return page > 0 ? page : 1;
 }
 const currentPage = ref<number>(getPage())
-const zoom = ref<number>(50)
+const zoom = ref<number>(70)
 
 const url = computed(() => `./assets/pages/LLBG_latvany_20220223_vegleges-${currentPage.value}.pdf`);
 
@@ -46,14 +46,21 @@ watch(() => currentPage.value, () => {
         />
       </svg>
     </button>
-    <div class="flex flex-col w-full min-h-screen p-10 justify-center items-center">
-      <input class="m-4 max-w-64 rounded-lg overflow-hidden appearance-none bg-gray-400 h-3 w-128" type="range" min="0" max="100" step="10" v-model="zoom" />
+    <div class="flex flex-col w-full min-h-screen p-2 justify-center items-center">
+      <input
+        class="m-3 rounded-lg overflow-hidden appearance-none bg-gray-400 h-6 w-128"
+        type="range"
+        min="0"
+        max="150"
+        step="10"
+        v-model="zoom"
+      />
       <PdfViewer :path="url" :zoom="zoom" class="h-15/16" />
       <input
         v-model="currentPage"
         type="number"
         :max="MAX"
-        class="h-1/16 w-32 bg-gray-300 border border-gray-300 text-gray-900 text-lg text-center rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        class="m-2 h-1/16 w-24 bg-gray-300 border border-gray-300 text-gray-900 text-lg text-center rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         required
       />
     </div>
