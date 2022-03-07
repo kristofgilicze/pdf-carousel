@@ -15,8 +15,6 @@ const props = defineProps({
 
 const pdfObject = ref<HTMLObjectElement>()
 const loading = ref<boolean>(true)
-const key = ref<number>(0)
-
 
 function stopLoading() {
     loading.value = false
@@ -27,7 +25,6 @@ const opts = computed(() => `#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messa
 const dataURL = computed(() => `${props.path}${opts.value}`);
 watch(dataURL, () => {
     loading.value = true
-    key.value = Math.random()
 })
 </script>
 
@@ -40,7 +37,6 @@ watch(dataURL, () => {
     <!-- The iframe -->
     <object
         @load="stopLoading"
-        :key="key"
         class="w-80/100 h-full"
         ref="pdfObject"
         :data="dataURL"
