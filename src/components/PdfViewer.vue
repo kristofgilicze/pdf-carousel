@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, toRefs, watch, watchEffect } from 'vue';
 import Loading from './Loading.vue';
 
 const props = defineProps({
@@ -7,14 +7,14 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    zoom: {
+        type: Number,
+        default: 50
+    }
 })
 
 const pdfObject = ref<HTMLObjectElement>()
 const loading = ref<boolean>(true)
-
-watch(() => props.path, () => {
-    loading.value = true
-})
 
 onMounted(() => {
     pdfObject.value?.addEventListener('load', () => {
@@ -22,8 +22,13 @@ onMounted(() => {
     })
 })
 
-const opts = "#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&scrollbar=0"
-const dataURL = computed(() => `${props.path}${opts}`);
+const {zoom} = toRefs(props)
+
+const opts = computed(() => `#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&scrollbar=0&zoom=${zoom.value}`)
+const dataURL = computed(() => `${props.path}${opts.value}`);
+watch(dataURL, () => {
+    loading.value = true
+})
 
 </script>
 
@@ -34,5 +39,7 @@ const dataURL = computed(() => `${props.path}${opts}`);
     </div>
 
     <!-- The iframe -->
-    <object class="w-65/100 h-full" ref="pdfObject" :data="dataURL" type="application/pdf"></object>
+    <object class="w-65/100 h-full" ref="pdfObject" :data="dataURL" type="application/pdf">
+    </object>
+
 </template>

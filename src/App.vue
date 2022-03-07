@@ -8,6 +8,7 @@ const getPage = (): number => {
   return page > 0 ? page : 1;
 }
 const currentPage = ref<number>(getPage())
+const zoom = ref<number>(50)
 
 const url = computed(() => `./assets/pages/LLBG_latvany_20220223_vegleges-${currentPage.value}.pdf`);
 
@@ -46,7 +47,8 @@ watch(() => currentPage.value, () => {
       </svg>
     </button>
     <div class="flex flex-col w-full min-h-screen p-10 justify-center items-center">
-      <PdfViewer :path="url" class="h-15/16" />
+      <input class="m-4 max-w-64 rounded-lg overflow-hidden appearance-none bg-gray-400 h-3 w-128" type="range" min="0" max="100" step="10" v-model="zoom" />
+      <PdfViewer :path="url" :zoom="zoom" class="h-15/16" />
       <input
         v-model="currentPage"
         type="number"
