@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, PropType, reactive, ref, toRefs, watch, watchEffect } from 'vue';
+import { $ref } from 'vue/macros'
+import { computed, PropType, ref, toRefs, watch } from 'vue';
 import Loading from './Loading.vue';
 
 const props = defineProps({
@@ -14,30 +15,28 @@ const props = defineProps({
 })
 
 const pdfObject = ref<HTMLObjectElement>()
-const loading = ref<boolean>(true)
+let loading = $ref<boolean>(true)
 
 function stopLoading() {
-    loading.value = false
+    loading = false
 }
 
 const { zoom } = toRefs(props)
 const opts = computed(() => `#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&zoom=${zoom.value}`)
 const dataURL = computed(() => `${props.path}${opts.value}`);
-watch(dataURL, () => {
-    loading.value = true
-})
+watch(dataURL, () => { loading = true })
 </script>
 
 <template>
     <!-- The loading indicator -->
-    <div class="w-80/100 h-full flex justify-center items-center" v-show="loading" id="loading">
+    <div class="w-full h-full flex justify-center items-center" v-show="loading" id="loading">
         <Loading class="w-12 h-12" />
     </div>
 
     <!-- The iframe -->
     <object
         @load="stopLoading"
-        class="w-80/100 h-full"
+        class="w-full h-full"
         ref="pdfObject"
         :data="dataURL"
         type="application/pdf"

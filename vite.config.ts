@@ -5,7 +5,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), windi(), viteStaticCopy({
+  plugins: [vue({ reactivityTransform: true }), windi(), viteStaticCopy({
     targets: [
       {
         src: './src/assets/pages/*.pdf',

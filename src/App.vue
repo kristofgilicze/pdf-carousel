@@ -1,35 +1,39 @@
 <script setup lang="ts">
+import { $ref } from 'vue/macros'
 import { computed, ref, watch } from 'vue';
 import PdfViewer from './components/PdfViewer.vue';
+import OpenExternalButton from './components/OpenExternalButton.vue';
+import DownloadInFullButton from './components/DownloadInFullButton.vue';
 
 const MAX = 48;
 const getPage = (): number => {
   const page = parseInt(window.location.search.split('page=')[1]);
   return page > 0 ? page : 1;
 }
-const currentPage = ref<number>(getPage())
+let currentPage = $ref<number>(getPage())
 const zoom = ref<number>(70)
 
-const url = computed(() => `./assets/pages/LLBG_latvany_20220223_vegleges-${currentPage.value}.pdf`);
+const urlFull = './assets/LLBG_latvany_20220223_vegleges.pdf'
+const url = computed(() => `./assets/pages/LLBG_latvany_20220223_vegleges-${currentPage}.pdf`);
 
 function navLeft() {
-  currentPage.value--;
+  currentPage--;
 }
 
 function navRight() {
-  if (currentPage.value < MAX) {
-    currentPage.value++;
+  if (currentPage < MAX) {
+    currentPage++;
   }
 }
 
 // update the url when the page changes
-watch(() => currentPage.value, () => {
-  window.history.pushState({}, '', `?page=${currentPage.value}`);
+watch(() => currentPage, () => {
+  window.history.pushState({}, '', `?page=${currentPage}`);
 });
 </script>
 
 <template>
-  <main class="flex flex-row min-h-screen w-full gap-2 justify-around">
+  <main class="flex flex-row min-h-screen w-full gap-5 justify-around">
     <button v-show="currentPage != 1" @click="navLeft" type="button">
       <svg
         class="h-6 w-6 dark:text-white"
@@ -46,7 +50,7 @@ watch(() => currentPage.value, () => {
         />
       </svg>
     </button>
-    <div class="flex flex-col w-full min-h-screen p-2 justify-center items-center">
+    <div class="flex flex-col gap-5 w-full min-h-screen justify-center items-center">
       <input
         class="m-3 rounded-lg overflow-hidden appearance-none bg-gray-400 h-6 w-128"
         type="range"
@@ -55,14 +59,18 @@ watch(() => currentPage.value, () => {
         step="10"
         v-model="zoom"
       />
-      <PdfViewer :path="url" :zoom="zoom" class="h-15/16" />
-      <input
-        v-model="currentPage"
-        type="number"
-        :max="MAX"
-        class="m-2 h-1/16 w-24 bg-gray-300 border border-gray-300 text-gray-900 text-lg text-center rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        required
-      />
+      <PdfViewer :path="url" :zoom="zoom" />
+      <nav class="flex flex-row justify-center items-center h-24 w-256">
+        <input
+          v-model="currentPage"
+          type="number"
+          :max="MAX"
+          class="h-10 w-24 bg-gray-300 border border-gray-300 text-gray-900 text-lg text-center rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          required
+        />
+        <OpenExternalButton :url="url" />
+        <!--<DownloadInFullButton :url="urlFull" />-->
+      </nav>
     </div>
     <button @click="navRight" type="button">
       <svg
@@ -91,7 +99,8 @@ main {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button {
+button,
+a {
   @apply rounded-lg
    font-medium
     bg-dark-700
