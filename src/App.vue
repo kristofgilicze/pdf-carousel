@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { $ref } from 'vue/macros'
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import PdfViewer from './components/PdfViewer.vue';
 import OpenExternalButton from './components/OpenExternalButton.vue';
 import DownloadInFullButton from './components/DownloadInFullButton.vue';
@@ -25,6 +25,17 @@ function navRight() {
     currentPage++;
   }
 }
+
+onMounted(() => {
+  document.onkeydown = (e) => {
+    e = e || window.event;
+    if (e.key === 'ArrowLeft') {
+      navLeft()
+    } else if (e.key === 'ArrowRight') {
+      navRight()
+    }
+  }
+})
 
 // update the url when the page changes
 watch(() => currentPage, () => {
