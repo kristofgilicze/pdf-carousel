@@ -9,13 +9,13 @@ const props = defineProps({
         default: '',
     },
     zoom: {
-        type: Number as PropType<number>,
-        default: 70
+        type: Number as PropType<number>
     }
 })
 
 const pdfObject = ref<HTMLObjectElement>()
 let loading = $ref<boolean>(true)
+let key = $ref<number>(0)
 
 function stopLoading() {
     loading = false
@@ -24,7 +24,10 @@ function stopLoading() {
 const { zoom } = toRefs(props)
 const opts = computed(() => `#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&zoom=${zoom.value}`)
 const dataURL = computed(() => `${props.path}${opts.value}`);
-watch(dataURL, () => { loading = true })
+watch(dataURL, () => { 
+    loading = true
+    key = Math.random()    
+})
 </script>
 
 <template>
@@ -35,6 +38,7 @@ watch(dataURL, () => { loading = true })
 
     <!-- The iframe -->
     <object
+        :key="key"
         @load="stopLoading"
         class="w-full h-full"
         ref="pdfObject"

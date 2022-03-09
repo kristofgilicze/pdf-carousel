@@ -3,7 +3,6 @@ import { $ref } from 'vue/macros'
 import { computed, onMounted, ref, watch } from 'vue';
 import PdfViewer from './components/PdfViewer.vue';
 import OpenExternalButton from './components/OpenExternalButton.vue';
-import DownloadInFullButton from './components/DownloadInFullButton.vue';
 
 const MAX = 48;
 const getPage = (): number => {
@@ -11,7 +10,7 @@ const getPage = (): number => {
   return page > 0 ? page : 1;
 }
 let currentPage = $ref<number>(getPage())
-const zoom = ref<number>(70)
+const zoom = ref<number>(85)
 
 const urlFull = './assets/LLBG_latvany_20220223_vegleges.pdf'
 const url = computed(() => `./assets/pages/LLBG_latvany_20220223_vegleges-${currentPage}.pdf`);
@@ -63,7 +62,7 @@ watch(() => currentPage, () => {
     </button>
     <div class="flex flex-col gap-5 w-full min-h-screen justify-center items-center">
       <input
-        class="m-3 rounded-lg overflow-hidden appearance-none bg-gray-400 h-6 w-128"
+        class="absolute top-0 m-3 rounded-lg overflow-hidden appearance-none bg-gray-400 h-6 w-128"
         type="range"
         min="0"
         max="150"
@@ -71,7 +70,7 @@ watch(() => currentPage, () => {
         v-model="zoom"
       />
       <PdfViewer :path="url" :zoom="zoom" />
-      <nav class="flex flex-row justify-center items-center h-24 w-256">
+      <nav class="absolute bottom-0 flex flex-row justify-center items-center h-24 w-256">
         <input
           v-model="currentPage"
           type="number"
@@ -80,7 +79,6 @@ watch(() => currentPage, () => {
           required
         />
         <OpenExternalButton :url="url" />
-        <!--<DownloadInFullButton :url="urlFull" />-->
       </nav>
     </div>
     <button @click="navRight" type="button">
