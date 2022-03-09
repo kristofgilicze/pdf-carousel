@@ -22,7 +22,7 @@ function stopLoading() {
 }
 
 const { zoom } = toRefs(props)
-const opts = computed(() => `#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&zoom=${zoom.value}`)
+const opts = computed(() => `#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&messages=0&zoom=${zoom?.value || 85}`)
 const dataURL = computed(() => `${props.path}${opts.value}`);
 watch(dataURL, () => { 
     loading = true
